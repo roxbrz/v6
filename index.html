@@ -10,7 +10,7 @@
             --asaph-card: #1e1e1e;
             --asaph-gray: #b0b0b0;
             --asaph-light: #e0e0e0;
-            --asaph-accent: #4dabf7;
+            --asaph-accent: #087849;
             --asaph-white: #ffffff;
         }
         
@@ -30,31 +30,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in-out forwards;
         }
         
-        .logo-container {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            cursor: pointer;
-        }
-        
-        .logo {
-            width: 80px;
-            height: auto;
-            opacity: 0.8;
-            transition: opacity 0.3s;
-        }
-        
-        .logo:hover {
-            opacity: 1;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .header {
             text-align: center;
             margin-bottom: 30px;
             width: 100%;
-            position: relative;
         }
         
         .header h1 {
@@ -251,15 +239,6 @@
                 padding: 15px;
             }
             
-            .logo-container {
-                top: 15px;
-                left: 15px;
-            }
-            
-            .logo {
-                width: 60px;
-            }
-            
             .form-container {
                 padding: 20px;
             }
@@ -271,10 +250,6 @@
     </style>
 </head>
 <body>
-    <div class="logo-container" onclick="alert('Preencha o formulário de Registro de Viagens!')">
-        <img src="https://static.wixstatic.com/media/912880_a5bca4b167ea4de19029e644dfd0658f~mv2.png" alt="ASAPH Logo" class="logo">
-    </div>
-    
     <div class="header">
         <h1>Registro de Viagens</h1>
         <p>ASAPH - Soluções em Tecnologia</p>
