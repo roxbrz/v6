@@ -538,8 +538,8 @@
             </div>
             
             <div class="form-group">
-                <label for="pneu">PNEU<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Estado dos pneus do veículo</span></span></label>
-                <select id="pneu" name="pneu">
+                <label for="pneu" class="required-field">PNEU<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Estado dos pneus do veículo</span></span></label>
+                <select id="pneu" name="pneu" required>
                     <option value="">Selecione...</option>
                     <option value="Cheio">Cheio</option>
                     <option value="Vazio">Vazio</option>
@@ -548,8 +548,8 @@
             
             <!-- Campo de Combustível (para carros não elétricos) -->
             <div class="form-group" id="combustivel-group">
-                <label for="combustivel">COMBUSTÍVEL<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Nível do tanque de combustível</span></span></label>
-                <select id="combustivel" name="combustivel">
+                <label for="combustivel" class="required-field">COMBUSTÍVEL<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Nível do tanque de combustível</span></span></label>
+                <select id="combustivel" name="combustivel" required>
                     <option value="">Selecione...</option>
                     <option value="4/4">4/4 (Tanque cheio)</option>
                     <option value="3/4">3/4</option>
@@ -560,8 +560,8 @@
             
             <!-- Campo de Nível da Bateria (para BYDs) -->
             <div class="form-group hidden" id="bateria-group">
-                <label for="bateria">NÍVEL DA BATERIA<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Nível de carga da bateria (veículos elétricos)</span></span></label>
-                <input type="range" id="bateria" name="bateria" min="1" max="100" value="100" class="battery-meter">
+                <label for="bateria" class="required-field">NÍVEL DA BATERIA<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Nível de carga da bateria (veículos elétricos)</span></span></label>
+                <input type="range" id="bateria" name="bateria" min="1" max="100" value="100" class="battery-meter" required>
                 <div id="bateria-value" class="battery-value battery-high">100%</div>
             </div>
             
@@ -575,8 +575,8 @@
             </div>
             
             <div class="form-group">
-                <label for="higiene">HIGIENE<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Estado de limpeza do veículo</span></span></label>
-                <select id="higiene" name="higiene">
+                <label for="higiene" class="required-field">HIGIENE<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Estado de limpeza do veículo</span></span></label>
+                <select id="higiene" name="higiene" required>
                     <option value="">Selecione...</option>
                     <option value="Limpo">Limpo</option>
                     <option value="Mais ou menos">Mais ou menos</option>
@@ -782,7 +782,7 @@ CARRO: ${carro}
 ${modelo}PLACA: ${placa}
 DESTINO: ${destino}
 NOME DO EVENTO: ${nomeEvento}
-KM ${km}
+KM: ${km}
 PNEU: ${pneu}
 ${combustivelOuBateria}
 CARTÃO: ${cartao}
