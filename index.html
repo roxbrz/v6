@@ -481,6 +481,19 @@
                 </select>
             </div>
             
+            <div class="form-group hidden" id="modelo-group">
+                <label for="modelo">MODELO<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Modelo do caminhão</span></span></label>
+                <select id="modelo" name="modelo">
+                    <option value="">Selecione o modelo</option>
+                    <option value="IVECO - DELIVER-19">IVECO - DELIVER-19</option>
+                    <option value="IVECO - DELIVERY-57">IVECO - DELIVERY-57</option>
+                    <option value="IVECO - DELIVERY-83">IVECO - DELIVERY-83</option>
+                    <option value="IVECO - DELIVERY-35">IVECO - DELIVERY-35</option>
+                    <option value="VUC-12">VUC-12</option>
+                    <option value="VUC-69">VUC-69</option>
+                </select>
+            </div>
+            
             <div class="form-group">
                 <label for="placa">PLACA<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Placa do veículo (preenchimento automático)</span></span></label>
                 <select id="placa" name="placa">
@@ -655,6 +668,10 @@
                 const isBYD = carroSelecionado === 'BYD 1' || carroSelecionado === 'BYD 2';
                 document.getElementById('combustivel-group').classList.toggle('hidden', isBYD);
                 document.getElementById('bateria-group').classList.toggle('hidden', !isBYD);
+                
+                // Mostrar/ocultar campo de modelo quando for Caminhão
+                const isCaminhao = carroSelecionado === 'Caminhão';
+                document.getElementById('modelo-group').classList.toggle('hidden', !isCaminhao);
             });
             
             // Atualizar o valor e cor do medidor de bateria
@@ -716,6 +733,9 @@
             const carrinho = document.getElementById('carrinho').value || 'Não informado';
             const data = document.getElementById('data').value;
             
+            // Adicionar modelo do caminhão se for o caso
+            const modelo = carro === 'Caminhão' ? `MODELO: ${document.getElementById('modelo').value || 'Não informado'}\n` : '';
+            
             // Formatar a data para exibição (DD/MM/YYYY)
             const dataParts = data.split('-');
             const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
@@ -723,7 +743,7 @@
             // Criar o texto com os resultados
             const resultadoTexto = `NOME: ${nome}
 CARRO: ${carro}
-PLACA: ${placa}
+${modelo}PLACA: ${placa}
 DESTINO: ${destino}
 NOME DO EVENTO: ${nomeEvento}
 KM: ${km}
