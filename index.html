@@ -239,7 +239,6 @@
             background-repeat: no-repeat;
         }
         
-        /* Estilos para o medidor de bateria */
         .battery-meter {
             width: 100%;
             -webkit-appearance: none;
@@ -300,12 +299,10 @@
             color: #ff6b6b;
         }
         
-        /* Esconder elementos quando necessário */
         .hidden {
             display: none;
         }
         
-        /* Footer estilo ASAPH */
         .footer {
             margin-top: 50px;
             text-align: center;
@@ -336,7 +333,6 @@
             color: var(--asaph-light);
         }
         
-        /* Tooltip para campos */
         .tooltip {
             position: relative;
             display: inline-block;
@@ -384,7 +380,6 @@
             opacity: 1;
         }
         
-        /* Efeito de loading no botão */
         .submit-btn.loading {
             pointer-events: none;
             position: relative;
@@ -407,7 +402,6 @@
             100% { transform: translateX(100%); }
         }
         
-        /* Melhorias para mobile */
         @media (max-width: 640px) {
             body {
                 padding: 15px;
@@ -439,7 +433,7 @@
     </div>
     
     <div class="form-container">
-        <form id="formViagem" onsubmit="return salvarRegistro(event)">
+        <form id="formViagem">
             <div class="form-group">
                 <label for="nome" class="required-field">NOME<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Selecione seu nome na lista</span></span></label>
                 <select id="nome" name="nome" required>
@@ -485,7 +479,7 @@
                 <label for="modelo">MODELO<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Modelo do caminhão</span></span></label>
                 <select id="modelo" name="modelo">
                     <option value="">Selecione o modelo</option>
-                    <option value="IVECO - DELIVER-19">IVECO - DELIVER-19</option>
+                    <option value="IVECO - DELIVERY-19">IVECO - DELIVERY-19</option>
                     <option value="IVECO - DELIVERY-57">IVECO - DELIVERY-57</option>
                     <option value="IVECO - DELIVERY-83">IVECO - DELIVERY-83</option>
                     <option value="IVECO - DELIVERY-35">IVECO - DELIVERY-35</option>
@@ -506,7 +500,7 @@
                     <option value="RNZ9E98">RNZ9E98 (Doblo-98)</option>
                     <option value="GBK4A85">GBK4A85 (Saveiro)</option>
                     <option value="ENJ2154">ENJ2154 (Carens)</option>
-                    <option value="TJY1I19">TJY1I19 (IVECO - DELIVER-19)</option>
+                    <option value="TJY1I19">TJY1I19 (IVECO - DELIVERY-19)</option>
                     <option value="TJQ5E57">TJQ5E57 (IVECO - DELIVERY-57)</option>
                     <option value="TJV1H83">TJV1H83 (IVECO - DELIVERY-83)</option>
                     <option value="TJV1C35">TJV1C35 (IVECO - DELIVERY-35)</option>
@@ -543,10 +537,11 @@
                     <option value="">Selecione...</option>
                     <option value="Cheio">Cheio</option>
                     <option value="Vazio">Vazio</option>
+                    <option value="Atenção necessária">Atenção necessária</option>
                 </select>
+                <input type="text" id="obsPneu" name="obsPneu" placeholder="Descreva a observação sobre o pneu" style="display: none; margin-top: 10px;">
             </div>
             
-            <!-- Campo de Combustível (para carros não elétricos) -->
             <div class="form-group" id="combustivel-group">
                 <label for="combustivel" class="required-field">COMBUSTÍVEL<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Nível do tanque de combustível</span></span></label>
                 <select id="combustivel" name="combustivel" required>
@@ -558,7 +553,6 @@
                 </select>
             </div>
             
-            <!-- Campo de Nível da Bateria (para BYDs) -->
             <div class="form-group hidden" id="bateria-group">
                 <label for="bateria" class="required-field">NÍVEL DA BATERIA<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Nível de carga da bateria (veículos elétricos)</span></span></label>
                 <input type="range" id="bateria" name="bateria" min="1" max="100" value="100" class="battery-meter" required>
@@ -566,11 +560,12 @@
             </div>
             
             <div class="form-group">
-                <label for="cartao">CARTÃO<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Cartão utilizado para pedágios/combustível</span></span></label>
-                <select id="cartao" name="cartao">
+                <label for="cartao" class="required-field">CARTÃO<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Cartão utilizado para pedágios/combustível</span></span></label>
+                <select id="cartao" name="cartao" required>
                     <option value="">Selecione...</option>
                     <option value="6530">6530</option>
                     <option value="9405">9405</option>
+                    <option value="Nenhum">Nenhum</option>
                 </select>
             </div>
             
@@ -599,7 +594,6 @@
             </div>
         </form>
         
-        <!-- Área para exibir os resultados -->
         <div id="resultadoContainer" style="display: none;">
             <div id="resultado" class="resultado"></div>
             <button id="copyBtn" class="copy-btn">COPIAR MENSAGEM</button>
@@ -613,39 +607,34 @@
     </div>
     
     <script>
-        // Configura a data atual automaticamente
         document.addEventListener('DOMContentLoaded', function() {
+            // Configura data atual
             const today = new Date();
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const year = today.getFullYear();
-            const todayFormatted = `${year}-${month}-${day}`;
-            
+            const todayFormatted = today.toISOString().split('T')[0];
             document.getElementById('data').value = todayFormatted;
+            
+            // Foco no primeiro campo
             document.getElementById('nome').focus();
             
+            // Ajuste para mobile
             if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                 document.querySelectorAll('select').forEach(select => {
                     select.style.fontSize = '16px';
                 });
             }
             
-            // Mostrar campo de texto quando selecionar "Outro" destino e exibir campo do nome do evento
+            // Mostrar/ocultar campos conforme seleções
             document.getElementById('destino').addEventListener('change', function() {
                 const outroDestinoField = document.getElementById('outroDestino');
                 const nomeEventoField = document.getElementById('nomeEvento');
-
                 outroDestinoField.style.display = this.value === 'Outro' ? 'block' : 'none';
-                if (this.value !== 'Outro') outroDestinoField.value = '';
-
                 nomeEventoField.style.display = this.value ? 'block' : 'none';
-                if (!this.value) nomeEventoField.value = '';
+                if (this.value !== 'Outro') outroDestinoField.value = '';
             });
             
-            // Atualizar placa automaticamente quando selecionar o carro
             document.getElementById('carro').addEventListener('change', function() {
-                const placaSelect = document.getElementById('placa');
                 const carroSelecionado = this.value;
+                const placaSelect = document.getElementById('placa');
                 
                 // Mapeamento de carros para placas
                 const mapeamentoPlacas = {
@@ -656,43 +645,36 @@
                     'Doblo-41': 'RNM2A41',
                     'Doblo-98': 'RNZ9E98',
                     'Saveiro': 'GBK4A85',
-                    'Carens': 'ENJ2154'
+                    'Carens': 'ENJ2154',
+                    'IVECO - DELIVERY-19': 'TJY1I19',
+                    'IVECO - DELIVERY-57': 'TJQ5E57',
+                    'IVECO - DELIVERY-83': 'TJV1H83',
+                    'IVECO - DELIVERY-35': 'TJV1C35',
+                    'VUC-12': 'GIT4J12',
+                    'VUC-69': 'DYJ5A69'
                 };
                 
                 if (mapeamentoPlacas[carroSelecionado]) {
-                    for (let i = 0; i < placaSelect.options.length; i++) {
-                        if (placaSelect.options[i].value === mapeamentoPlacas[carroSelecionado]) {
-                            placaSelect.selectedIndex = i;
-                            break;
-                        }
-                    }
+                    placaSelect.value = mapeamentoPlacas[carroSelecionado];
                 } else {
-                    placaSelect.selectedIndex = 0; // Volta para "Selecione a placa"
+                    placaSelect.selectedIndex = 0;
                 }
                 
-                // Mostrar/ocultar campos de combustível/bateria conforme o carro selecionado
-                const isBYD = carroSelecionado === 'BYD 1' || carroSelecionado === 'BYD 2';
+                // Mostrar/ocultar campos específicos
+                const isBYD = carroSelecionado.includes('BYD');
                 document.getElementById('combustivel-group').classList.toggle('hidden', isBYD);
                 document.getElementById('bateria-group').classList.toggle('hidden', !isBYD);
                 
-                // Mostrar/ocultar campo de modelo quando for Caminhão
                 const isCaminhao = carroSelecionado === 'Caminhão';
                 document.getElementById('modelo-group').classList.toggle('hidden', !isCaminhao);
-                
-                // Se não for caminhão, limpar o campo modelo
-                if (!isCaminhao) {
-                    document.getElementById('modelo').selectedIndex = 0;
-                }
+                if (!isCaminhao) document.getElementById('modelo').selectedIndex = 0;
             });
             
-            // Atualizar placa automaticamente quando selecionar o modelo do caminhão
             document.getElementById('modelo').addEventListener('change', function() {
                 const modeloSelecionado = this.value;
                 const placaSelect = document.getElementById('placa');
-                
-                // Mapeamento de modelos para placas
                 const mapeamentoModeloPlaca = {
-                    'IVECO - DELIVER-19': 'TJY1I19',
+                    'IVECO - DELIVERY-19': 'TJY1I19',
                     'IVECO - DELIVERY-57': 'TJQ5E57',
                     'IVECO - DELIVERY-83': 'TJV1H83',
                     'IVECO - DELIVERY-35': 'TJV1C35',
@@ -701,22 +683,15 @@
                 };
                 
                 if (mapeamentoModeloPlaca[modeloSelecionado]) {
-                    for (let i = 0; i < placaSelect.options.length; i++) {
-                        if (placaSelect.options[i].value === mapeamentoModeloPlaca[modeloSelecionado]) {
-                            placaSelect.selectedIndex = i;
-                            break;
-                        }
-                    }
+                    placaSelect.value = mapeamentoModeloPlaca[modeloSelecionado];
                 }
             });
             
-            // Atualizar o valor e cor do medidor de bateria
             document.getElementById('bateria').addEventListener('input', function() {
                 const value = this.value;
                 const valueDisplay = document.getElementById('bateria-value');
                 valueDisplay.textContent = `${value}%`;
                 
-                // Atualizar a cor conforme o valor
                 if (value >= 70) {
                     valueDisplay.className = 'battery-value battery-high';
                 } else if (value >= 50) {
@@ -726,57 +701,57 @@
                 }
             });
             
-            // Adicionar efeito de loading ao botão de submit
-            document.getElementById('formViagem').addEventListener('submit', function() {
-                const submitBtn = this.querySelector('.submit-btn');
-                submitBtn.classList.add('loading');
-                setTimeout(() => {
-                    submitBtn.classList.remove('loading');
-                }, 1500);
+            document.getElementById('pneu').addEventListener('change', function() {
+                const obsPneuField = document.getElementById('obsPneu');
+                obsPneuField.style.display = this.value === 'Atenção necessária' ? 'block' : 'none';
             });
             
-            // Adicionar evento de clique ao botão de copiar
+            // Evento de submit corrigido
+            document.getElementById('formViagem').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const submitBtn = this.querySelector('.submit-btn');
+                submitBtn.classList.add('loading');
+                
+                setTimeout(() => {
+                    salvarRegistro();
+                    submitBtn.classList.remove('loading');
+                }, 500);
+            });
+            
             document.getElementById('copyBtn').addEventListener('click', copiarMensagem);
         });
-        
-        // Função para salvar o registro e exibir os dados
-        function salvarRegistro(event) {
-            event.preventDefault();
+
+        function salvarRegistro() {
+            const form = document.getElementById('formViagem');
             
-            // Obter todos os valores do formulário
-            const nome = document.getElementById('nome').value;
-            const carro = document.getElementById('carro').value;
-            const placa = document.getElementById('placa').value || 'Não informado';
-            const destinoSelect = document.getElementById('destino').value;
-            const outroDestino = document.getElementById('outroDestino').value;
-            const destino = destinoSelect === 'Outro' ? outroDestino : destinoSelect;
-            const nomeEvento = document.getElementById('nomeEvento').value || 'Não informado';
-            const km = document.getElementById('km').value;
-            const pneu = document.getElementById('pneu').value || 'Não informado';
+            // Obter valores
+            const nome = form.nome.value;
+            const carro = form.carro.value;
+            const placa = form.placa.value || 'Não informado';
+            const destino = form.destino.value === 'Outro' ? form.outroDestino.value : form.destino.value;
+            const nomeEvento = form.nomeEvento.value || 'Não informado';
+            const km = form.km.value;
+            const pneu = form.pneu.value === 'Atenção necessária' ? 
+                         `${form.pneu.value} (${form.obsPneu.value})` : form.pneu.value;
             
-            // Verificar se é BYD para pegar o nível da bateria ou combustível
-            const isBYD = carro === 'BYD 1' || carro === 'BYD 2';
-            let combustivelOuBateria;
+            const isBYD = carro.includes('BYD');
+            const combustivelOuBateria = isBYD ? 
+                `Bateria: ${form.bateria.value}%` : 
+                `Combustível: ${form.combustivel.value || 'Não informado'}`;
             
-            if (isBYD) {
-                combustivelOuBateria = `Bateria: ${document.getElementById('bateria').value}%`;
-            } else {
-                combustivelOuBateria = `Combustível: ${document.getElementById('combustivel').value || 'Não informado'}`;
-            }
+            const cartao = form.cartao.value || 'Não informado';
+            const higiene = form.higiene.value || 'Não informado';
+            const carrinho = form.carrinho.value || 'Não informado';
             
-            const cartao = document.getElementById('cartao').value || 'Não informado';
-            const higiene = document.getElementById('higiene').value || 'Não informado';
-            const carrinho = document.getElementById('carrinho').value || 'Não informado';
-            const data = document.getElementById('data').value;
-            
-            // Adicionar modelo do caminhão se for o caso
-            const modelo = carro === 'Caminhão' ? `MODELO: ${document.getElementById('modelo').value || 'Não informado'}\n` : '';
-            
-            // Formatar a data para exibição (DD/MM/YYYY)
-            const dataParts = data.split('-');
+            // Formatar data
+            const dataParts = form.data.value.split('-');
             const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
             
-            // Criar o texto com os resultados
+            // Modelo do caminhão se aplicável
+            const modelo = carro === 'Caminhão' ? `MODELO: ${form.modelo.value || 'Não informado'}\n` : '';
+            
+            // Montar resultado
             const resultadoTexto = `NOME: ${nome}
 CARRO: ${carro}
 ${modelo}PLACA: ${placa}
@@ -790,56 +765,34 @@ HIGIENE: ${higiene}
 CARRINHO: ${carrinho}
 DATA: ${dataFormatada}`;
             
-            // Exibir os resultados
-            const resultadoDiv = document.getElementById('resultado');
-            resultadoDiv.textContent = resultadoTexto;
-            
+            // Exibir resultado
+            document.getElementById('resultado').textContent = resultadoTexto;
             const resultadoContainer = document.getElementById('resultadoContainer');
             resultadoContainer.style.display = 'block';
-            
-            // Rolagem suave para o resultado
             resultadoContainer.scrollIntoView({ behavior: 'smooth' });
-            
-            // Não enviar o formulário (evita recarregar a página)
-            return false;
         }
-        
-        // Função para copiar a mensagem
+
         function copiarMensagem() {
             const resultadoTexto = document.getElementById('resultado').textContent;
-            const copyBtn = document.getElementById('copyBtn');
-            
-            // Criar um elemento textarea temporário para copiar o texto
             const textarea = document.createElement('textarea');
             textarea.value = resultadoTexto;
             document.body.appendChild(textarea);
             textarea.select();
             
             try {
-                // Copiar o texto para a área de transferência
-                const successful = document.execCommand('copy');
-                const msg = successful ? 'Mensagem copiada!' : 'Não foi possível copiar';
-                
-                // Feedback visual
+                document.execCommand('copy');
+                const copyBtn = document.getElementById('copyBtn');
                 copyBtn.textContent = '✓ COPIADO!';
                 copyBtn.style.backgroundColor = '#087849';
                 
                 setTimeout(() => {
-                    copyBtn.innerHTML = '<span class="copy-icon"></span>COPIAR MENSAGEM';
+                    copyBtn.textContent = 'COPIAR MENSAGEM';
                     copyBtn.style.backgroundColor = '';
                 }, 2000);
-                
             } catch (err) {
-                copyBtn.textContent = 'ERRO AO COPIAR';
-                copyBtn.style.backgroundColor = '#ff6b6b';
-                
-                setTimeout(() => {
-                    copyBtn.innerHTML = '<span class="copy-icon"></span>COPIAR MENSAGEM';
-                    copyBtn.style.backgroundColor = '';
-                }, 2000);
+                console.error('Erro ao copiar:', err);
             }
             
-            // Remover o textarea temporário
             document.body.removeChild(textarea);
         }
     </script>
