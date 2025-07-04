@@ -688,7 +688,21 @@
                 const value = this.value;
                 batteryFill.style.width = value + '%';
                 batteryFill.textContent = value + '%';
+                batteryFill.style.backgroundColor = getBatteryColor(value);
             });
+
+            function getBatteryColor(percent) {
+                // Tons neon entre vermelho neon e verde neon
+                const redStart = 255, greenStart = 77, blueStart = 77;  // #FF4D4D
+                const redEnd = 77, greenEnd = 255, blueEnd = 77;        // #4DFF4D
+
+                const p = percent / 100;
+                const r = Math.round(redStart + (redEnd - redStart) * p);
+                const g = Math.round(greenStart + (greenEnd - greenStart) * p);
+                const b = Math.round(blueStart + (blueEnd - blueStart) * p);
+
+                return `rgb(${r}, ${g}, ${b})`;
+            }
             
             document.getElementById('pneu').addEventListener('change', function() {
                 const obsPneuField = document.getElementById('obsPneu');
