@@ -299,9 +299,9 @@
             });
 
             function getBatteryColor(percent) {
-                // Cores intermediárias entre vermelho e verde
-                const redStart = 255, greenStart = 102, blueStart = 102;  // #FF6666
-                const redEnd = 102, greenEnd = 255, blueEnd = 102;        // #66FF66
+                // Tons mais suaves e menos saturados
+                const redStart = 255, greenStart = 153, blueStart = 153;  // #FF9999
+                const redEnd = 153, greenEnd = 255, blueEnd = 153;        // #99FF99
 
                 const p = percent / 100;
                 const r = Math.round(redStart + (redEnd - redStart) * p);
