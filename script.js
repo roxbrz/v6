@@ -157,11 +157,20 @@ function mostrarVideoSusto() {
     // Cria o elemento de vídeo
     const video = document.createElement('video');
     video.src = 'susto/susto_leandro.mp4';
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('muted', '');
+    video.muted = true;
     video.autoplay = true;
-    video.controls = false;
+    video.controls = true;
     video.style.maxWidth = '100vw';
     video.style.maxHeight = '100vh';
     video.style.background = 'black';
+
+    // Tenta iniciar o vídeo programaticamente
+    video.addEventListener('canplay', () => {
+        video.play();
+    });
 
     // Fecha o overlay ao terminar o vídeo ou ao clicar
     video.addEventListener('ended', () => document.body.removeChild(overlay));
@@ -169,7 +178,10 @@ function mostrarVideoSusto() {
 
     overlay.appendChild(video);
     document.body.appendChild(overlay);
-    video.play();
+    // Para garantir que o play seja chamado após inserção no DOM
+    setTimeout(() => {
+        video.play();
+    }, 100);
 }
 
 function salvarRegistro() {
