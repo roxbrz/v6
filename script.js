@@ -159,8 +159,6 @@ function mostrarVideoSusto() {
     video.src = 'susto/susto_leandro.mp4';
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
-    video.setAttribute('muted', '');
-    video.muted = true;
     video.autoplay = true;
     video.controls = true;
     video.style.maxWidth = '100vw';
