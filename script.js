@@ -132,60 +132,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('copyBtn').addEventListener('click', copiarMensagem);
 
-    // Função para atualizar o rodízio veicular
-    function atualizarRodizio() {
-        const carroSelecionado = document.getElementById('carro').value;
-        const placaSelecionada = document.getElementById('placa').value;
-        const rodizioSelect = document.getElementById('rodizio');
-
-        // Limpa as opções existentes
-        rodizioSelect.innerHTML = '';
-
-        // Se for veículo elétrico (BYD), não aplica rodízio
-        if (carroSelecionado.includes('BYD')) {
-            rodizioSelect.disabled = true;
-            const option = document.createElement('option');
-            option.value = 'Não se aplica';
-            option.textContent = 'Não se aplica (veículo elétrico)';
-            rodizioSelect.appendChild(option);
-            return;
+    // Exibe vídeo de susto para Leandro
+    document.getElementById('nome').addEventListener('change', function() {
+        if (this.value === 'Leandro') {
+            mostrarVideoSusto();
         }
-
-        // Se não houver placa selecionada
-        if (!placaSelecionada) {
-            rodizioSelect.disabled = true;
-            const option = document.createElement('option');
-            option.value = '';
-            option.textContent = 'Selecione a placa primeiro';
-            rodizioSelect.appendChild(option);
-            return;
-        }
-
-        // Pega o último dígito da placa
-        const ultimoDigito = placaSelecionada.charAt(placaSelecionada.length - 1);
-
-        // Determina o dia do rodízio
-        let diaRodizio = '';
-        if (['1', '2'].includes(ultimoDigito)) {
-            diaRodizio = 'Segunda-feira';
-        } else if (['3', '4'].includes(ultimoDigito)) {
-            diaRodizio = 'Terça-feira';
-        } else if (['5', '6'].includes(ultimoDigito)) {
-            diaRodizio = 'Quarta-feira';
-        } else if (['7', '8'].includes(ultimoDigito)) {
-            diaRodizio = 'Quinta-feira';
-        } else if (['9', '0'].includes(ultimoDigito)) {
-            diaRodizio = 'Sexta-feira';
-        }
-
-        // Atualiza o select
-        rodizioSelect.disabled = false;
-        const option = document.createElement('option');
-        option.value = diaRodizio;
-        option.textContent = `Rodízio: ${diaRodizio} (Final ${ultimoDigito})`;
-        rodizioSelect.appendChild(option);
-    }
+    });
 });
+
+function mostrarVideoSusto() {
+    // Cria o elemento de overlay
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.background = 'rgba(0,0,0,0.95)';
+    overlay.style.zIndex = '9999';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+
+    // Cria o elemento de vídeo
+    const video = document.createElement('video');
+    video.src = 'susto/susto_leandro.mp4';
+    video.autoplay = true;
+    video.controls = false;
+    video.style.maxWidth = '100vw';
+    video.style.maxHeight = '100vh';
+    video.style.background = 'black';
+
+    // Fecha o overlay ao terminar o vídeo ou ao clicar
+    video.addEventListener('ended', () => document.body.removeChild(overlay));
+    overlay.addEventListener('click', () => document.body.removeChild(overlay));
+
+    overlay.appendChild(video);
+    document.body.appendChild(overlay);
+    video.play();
+}
 
 function salvarRegistro() {
     const form = document.getElementById('formViagem');
