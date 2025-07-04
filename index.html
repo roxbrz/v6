@@ -239,64 +239,39 @@
             background-repeat: no-repeat;
         }
         
-        .battery-meter {
+        .battery-container {
+            position: relative;
             width: 100%;
-            -webkit-appearance: none;
-            height: 65px;
-            border-radius: 4px;
-            margin-top: 12px;
-            outline: none;
-            background: #333;
+            height: 50px;
+            background-color: #333;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .battery-container input[type=range] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
             cursor: pointer;
-            transition: var(--asaph-transition);
+            z-index: 2;
         }
         
-        .battery-meter:hover {
-            opacity: 0.9;
-        }
-        
-        .battery-meter::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--asaph-accent);
-            cursor: pointer;
-            border: 3px solid var(--asaph-card);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            transition: var(--asaph-transition);
-        }
-        
-        .battery-meter::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--asaph-accent);
-            cursor: pointer;
-            border: 3px solid var(--asaph-card);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            transition: var(--asaph-transition);
-        }
-        
-        .battery-value {
+        #batteryFill {
+            height: 100%;
+            background-color: var(--asaph-accent);
             text-align: center;
-            font-weight: 600;
-            margin-top: 8px;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-        }
-        
-        .battery-high {
-            color: #51cf66;
-        }
-        
-        .battery-medium {
-            color: #fcc419;
-        }
-        
-        .battery-low {
-            color: #ff6b6b;
+            line-height: 50px;
+            color: var(--asaph-white);
+            font-weight: bold;
+            font-size: 18px;
+            transition: width 0.3s ease;
+            border-radius: 6px;
+            width: 100%;
+            z-index: 1;
         }
         
         .hidden {
@@ -562,8 +537,10 @@
             
             <div class="form-group" id="bateria-group">
                 <label for="bateria" class="required-field">NÍVEL DA BATERIA<span class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Nível de carga da bateria (veículos elétricos)</span></span></label>
-                <input type="range" id="bateria" name="bateria" min="1" max="100" value="100" class="battery-meter" required>
-                <div id="bateria-value" class="battery-value battery-high">100%</div>
+                <div class="battery-container">
+                    <div id="batteryFill">100%</div>
+                    <input type="range" id="bateria" name="bateria" min="1" max="100" value="100" required>
+                </div>
             </div>
             
             <div class="form-group">
@@ -704,18 +681,13 @@
                 atualizarRodizio();
             });
             
-            document.getElementById('bateria').addEventListener('input', function() {
+            // Atualização do visualizador de bateria
+            const batterySlider = document.getElementById('bateria');
+            const batteryFill = document.getElementById('batteryFill');
+            batterySlider.addEventListener('input', function() {
                 const value = this.value;
-                const valueDisplay = document.getElementById('bateria-value');
-                valueDisplay.textContent = `${value}%`;
-                
-                if (value >= 70) {
-                    valueDisplay.className = 'battery-value battery-high';
-                } else if (value >= 50) {
-                    valueDisplay.className = 'battery-value battery-medium';
-                } else {
-                    valueDisplay.className = 'battery-value battery-low';
-                }
+                batteryFill.style.width = value + '%';
+                batteryFill.textContent = value + '%';
             });
             
             document.getElementById('pneu').addEventListener('change', function() {
